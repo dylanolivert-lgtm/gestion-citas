@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<meta name="description" content="Sistema para administrar citas, trámites y seguimientos.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+
+<title>Gestión de Citas y Trámites</title>
+<style>
+:root{--bg:#f3f6fb;--panel:#fff;--ink:#182235;--muted:#718096;--line:#e7edf5;--nav:#101827;--blue:#3767e8;--blue2:#eaf0ff;--green:#16865b;--amber:#b7791f;--red:#c53b45;--shadow:0 8px 28px rgba(26,42,70,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.app{min-height:100vh;display:grid;grid-template-columns:245px 1fr}
+.sidebar{background:var(--nav);color:#fff;padding:25px 16px;display:flex;flex-direction:column;gap:25px}.brand{display:flex;gap:11px;align-items:center;padding:0 10px}.logo{width:40px;height:40px;border-radius:13px;background:#3767e8;display:grid;place-items:center;font-size:21px}.brand strong{display:block;font-size:15px}.brand small{color:#aab6c8}.nav{display:grid;gap:7px}.nav button{color:#c5cfdd;background:transparent;text-align:left;padding:12px 13px;border-radius:10px;display:flex;gap:12px;align-items:center}.nav button.active,.nav button:hover{background:#26344b;color:#fff}.nav .ico{width:20px;text-align:center}.side-note{margin-top:auto;color:#9aa9bc;font-size:12px;padding:10px}
+main{padding:28px 34px;max-width:1500px;width:100%;margin:auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px}.eyebrow{color:var(--blue);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.09em}.topbar h1{font-size:27px;margin:4px 0}.sub{color:var(--muted);margin:0}.today{color:var(--muted);font-size:13px;text-align:right}
+.page{display:none}.page.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}.stat,.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.stat{padding:17px}.stat-top{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}.stat strong{font-size:29px;display:block;margin-top:7px}.stat .badge-icon{background:var(--blue2);color:var(--blue);border-radius:10px;padding:8px}
+.card{padding:20px;margin-bottom:18px}.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.card h2{font-size:17px;margin:0}.muted{color:var(--muted)}.btn{padding:10px 14px;border-radius:9px;background:#eef2f8;color:#334155;font-weight:650}.btn.primary{background:var(--blue);color:#fff}.btn.danger{background:#fff0f0;color:var(--red)}.btn.small{padding:7px 10px;font-size:12px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+.alerts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.alert{border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:13px;background:#fff}.alert.red{border-left-color:var(--red)}.alert.blue{border-left-color:var(--blue)}.alert strong{display:block;font-size:14px;margin-bottom:3px}.alert p{margin:0;color:var(--muted);font-size:13px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}.toolbar input,.toolbar select,.field input,.field select,.field textarea{border:1px solid #dce4ef;border-radius:9px;padding:10px 11px;background:#fff;color:var(--ink);width:100%;outline:none}.toolbar input{max-width:290px}.toolbar select{width:auto;min-width:145px}
+.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:760px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-weight:700;background:#fafbfd}td strong{font-size:13px}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#eef2f8;color:#526176;font-size:11px;font-weight:700}.pill.green{background:#e8f7ef;color:var(--green)}.pill.yellow{background:#fff6df;color:var(--amber)}.pill.red{background:#fff0f0;color:var(--red)}.empty{text-align:center;color:var(--muted);padding:28px}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field label{display:block;font-size:12px;font-weight:750;margin-bottom:6px;color:#4b5870}.field.full{grid-column:1/-1}.field textarea{min-height:85px;resize:vertical}.form-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}
+.alert-list{display:grid;gap:10px}.alert-row{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--line);padding:13px;border-radius:11px}.dot{width:10px;height:10px;border-radius:50%;background:var(--amber);margin-top:5px;flex:none}.dot.red{background:var(--red)}.dot.blue{background:var(--blue)}
+.bar-list{display:grid;gap:12px}.bar-line{display:grid;grid-template-columns:125px 1fr 35px;gap:10px;align-items:center;font-size:13px}.track{height:9px;background:#edf1f7;border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:20px}
+.modal{position:fixed;inset:0;background:#0b1425a6;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}.modal.open{display:flex}.modal-box{background:#fff;border-radius:16px;width:min(650px,100%);max-height:92vh;overflow:auto;padding:22px;box-shadow:0 20px 60px #0003}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal-head h2{margin:0;font-size:20px}.close{background:#f0f3f8;border-radius:8px;padding:7px 11px}
+.toast{position:fixed;bottom:20px;right:20px;background:#17243a;color:white;padding:12px 17px;border-radius:10px;box-shadow:var(--shadow);display:none;z-index:20}.toast.show{display:block}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{padding:12px;gap:10px}.brand{padding:4px 8px}.nav{display:flex;overflow-x:auto}.nav button{white-space:nowrap;padding:9px 11px}.side-note{display:none}main{padding:20px 15px}.stats{grid-template-columns:repeat(2,1fr)}.alerts{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.topbar{align-items:flex-start}.topbar h1{font-size:22px}.today{display:none}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:24px}.alerts{grid-template-columns:1fr}.card{padding:15px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.toolbar input{max-width:none;flex:1}.toolbar select{flex:1}}
+
+#coverScreen{position:fixed;inset:0;z-index:50;background:#9eb9a8;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#coverScreen img{position:absolute;width:100%;height:100%;object-fit:cover;inset:0}
+#coverScreen:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.20))}
+#coverEnter{position:absolute;z-index:2;bottom:max(34px,env(safe-area-inset-bottom));padding:13px 30px;border-radius:30px;background:#101827;color:white;font-weight:750;box-shadow:0 8px 25px #0003}
+#coverTitle{position:absolute;z-index:2;bottom:110px;color:white;text-align:center;font-size:22px;font-weight:750;text-shadow:0 2px 12px #0008}
+
+</style>
+</head>
+<body>
+<div id="coverScreen">
+  <img src="./portada.jpg" alt="Portada con silueta de elefante">
+  <div id="coverTitle">Gestión de Citas y Trámites</div>
+  <button id="coverEnter" onclick="enterApp()">ENTRAR</button>
+</div>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">✓</div><div><strong>Gestión de trámites</strong><small>Panel de control</small></div></div>
+  <nav class="nav">
+    <button class="active" data-page="dashboard"><span class="ico">▦</span> Inicio</button>
+    <button data-page="appointments"><span class="ico">▣</span> Citas</button>
+    <button data-page="alerts"><span class="ico">◉</span> Alertas <span id="alertCount" class="pill">0</span></button>
+    <button data-page="history"><span class="ico">↺</span> Historial</button>
+    <button data-page="statistics"><span class="ico">▥</span> Estadísticas</button>
+  </nav>
+  <div class="side-note">Los datos se guardan en este dispositivo mediante el almacenamiento local del navegador.</div>
+</aside>
+<main>
+  <header class="topbar"><div><div class="eyebrow">Sistema de seguimiento</div><h1 id="pageTitle">Panel principal</h1><p class="sub" id="pageSub">Resumen de citas, solicitudes y pendientes.</p></div><div style="display:flex;align-items:center;gap:10px"><button class="btn primary" id="installBtn" style="display:none" onclick="installApp()">＋ Instalar app</button><div class="today" id="today"></div></div></header>
+
+  <section class="page active" id="dashboard">
+    <div class="stats">
+      <div class="stat"><div class="stat-top">Citas registradas <span class="badge-icon">▣</span></div><strong id="sTotal">0</strong><small class="muted">Total de registros</small></div>
+      <div class="stat"><div class="stat-top">Próximas citas <span class="badge-icon">◷</span></div><strong id="sUpcoming">0</strong><small class="muted">En los siguientes 7 días</small></div>
+      <div class="stat"><div class="stat-top">Pendientes <span class="badge-icon">⌛</span></div><strong id="sPending">0</strong><small class="muted">Por atender o dar seguimiento</small></div>
+      <div class="stat"><div class="stat-top">Atendidas <span class="badge-icon">✓</span></div><strong id="sDone">0</strong><small class="muted">Con asistencia registrada</small></div>
+    </div>
+    <div class="card"><div class="card-head"><h2>Alertas que requieren atención</h2><button class="btn small" onclick="navigate('alerts')">Ver todas</button></div><div class="alerts" id="dashboardAlerts"></div></div>
+    <div class="card"><div class="card-head"><h2>Próximas citas</h2><button class="btn primary small" onclick="openModal()">+ Nueva cita</button></div><div class="table-wrap"><table><thead><tr><th>Contratista</th><th>Fecha y hora</th><th>Trámite</th><th>Estado</th></tr></thead><tbody id="upcomingTable"></tbody></table></div></div>
+  </section>
+
+  <section class="page" id="appointments">
+    <div class="card"><div class="card-head"><h2>Registro y agenda de citas</h2><button class="btn primary" onclick="openModal()">+ Registrar cita</button></div>
+      <div class="toolbar"><input id="search" placeholder="Buscar contratista..." oninput="renderAppointments()"><select id="filterType" onchange="renderAppointments()"><option value="">Todos los trámites</option><option>Inscripción</option><option>Renovación</option><option>Modificación</option><option>Otro</option></select><select id="filterStatus" onchange="renderAppointments()"><option value="">Todos los estados</option><option>Pendiente</option><option>En proceso</option><option>Completado</option><option>Cancelado</option><option>No se presentó</option></select><input type="date" id="filterDate" onchange="renderAppointments()" title="Filtrar por fecha"></div>
+      <div class="table-wrap"><table><thead><tr><th>Contratista</th><th>Fecha y hora</th><th>Tipo de trámite</th><th>Estado</th><th>Asistencia</th><th>Acciones</th></tr></thead><tbody id="appointmentsTable"></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="page" id="alerts">
+    <div class="card"><div class="card-head"><h2>Centro de alertas</h2><span class="muted">Revisión automática de tus registros</span></div><div class="alert-list" id="allAlerts"></div></div>
+    <div class="card"><h2>¿Cómo se generan las alertas?</h2><p class="muted">• Cita próxima: faltan 3 días o menos para la cita.</p><p class="muted">• Sin movimiento: la solicitud lleva 7 días o más sin actualizarse y no está completada ni cancelada.</p><p class="muted">• Requiere seguimiento: marcaste el registro para darle seguimiento.</p><p class="muted">• Posible horario duplicado: hay más de una cita en la misma fecha y hora.</p></div>
+  </section>
+
+  <section class="page" id="history">
+    <div class="card"><div class="card-head"><h2>Historial de contratistas</h2></div><div class="toolbar"><input id="historySearch" placeholder="Buscar por nombre..." oninput="renderHistory()"></div><div class="table-wrap"><table><thead><tr><th>Contratista</th><th>Fecha</th><th>Trámite</th><th>Estado final</th><th>Notas</th></tr></thead><tbody id="historyTable"></tbody></table></div></div>
+  </section>
+
+  <section class="page" id="statistics">
+    <div class="stats">
+      <div class="stat"><div class="stat-top">Inscripciones</div><strong id="stIns">0</strong></div>
+      <div class="stat"><div class="stat-top">Renovaciones</div><strong id="stRen">0</strong></div>
+      <div class="stat"><div class="stat-top">Modificaciones</div><strong id="stMod">0</strong></div>
+      <div class="stat"><div class="stat-top">Canceladas / ausentes</div><strong id="stCancel">0</strong></div>
+    </div>
+    <div class="card"><h2>Citas por día de la semana</h2><p class="muted">Distribución según la fecha registrada.</p><div class="bar-list" id="weekdayBars"></div></div>
+    <div class="card"><h2>Estado de los trámites</h2><div class="bar-list" id="statusBars"></div></div>
+  </section>
+</main>
+</div>
+
+<div class="modal" id="modal">
+ <div class="modal-box">
+  <div class="modal-head"><h2 id="modalTitle">Registrar nueva cita</h2><button class="close" onclick="closeModal()">✕</button></div>
+  <form id="appointmentForm">
+   <input type="hidden" id="editId">
+   <div class="form-grid">
+    <div class="field full"><label for="name">Nombre del contratista *</label><input id="name" required maxlength="100" placeholder="Nombre completo"></div>
+    <div class="field"><label for="date">Fecha de la cita *</label><input id="date" type="date" required></div>
+    <div class="field"><label for="time">Hora *</label><input id="time" type="time" required></div>
+    <div class="field"><label for="type">Tipo de trámite *</label><select id="type" required><option>Inscripción</option><option>Renovación</option><option>Modificación</option><option>Otro</option></select></div>
+    <div class="field"><label for="status">Estado del trámite</label><select id="status"><option>Pendiente</option><option>En proceso</option><option>Completado</option><option>Cancelado</option><option>No se presentó</option></select></div>
+    <div class="field"><label for="attendance">Control de asistencia</label><select id="attendance"><option value="">Sin registrar</option><option>Asistió</option><option>Canceló</option><option>No se presentó</option></select></div>
+    <div class="field"><label for="followup">¿Requiere seguimiento?</label><select id="followup"><option value="no">No</option><option value="yes">Sí</option></select></div>
+    <div class="field full"><label for="notes">Notas / motivo del seguimiento</label><textarea id="notes" placeholder="Agrega detalles, acuerdos o pendientes..."></textarea></div>
+   </div>
+   <div class="form-actions"><button type="button" class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary" type="submit">Guardar cita</button></div>
+  </form>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='gestion_citas_v1';
+let records=JSON.parse(localStorage.getItem(KEY)||'[]');
+const $=id=>document.getElementById(id);
+const todayISO=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const dateObj=s=>new Date(s+'T00:00:00');
+const daysBetween=(a,b)=>Math.floor((dateObj(b)-dateObj(a))/86400000);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=s=>s?dateObj(s).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}):'—';
+function save(){localStorage.setItem(KEY,JSON.stringify(records));renderAll()}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2400)}
+function pill(status){let c=status==='Completado'||status==='Asistió'?'green':status==='Pendiente'||status==='En proceso'?'yellow':status==='Cancelado'||status==='No se presentó'?'red':'';return `<span class="pill ${c}">${esc(status||'Sin registrar')}</span>`}
+function alertsFor(r){
+ const a=[],diff=daysBetween(todayISO(),r.date);
+ if(diff>=0&&diff<=3&&r.status!=='Cancelado'&&r.status!=='Completado')a.push({kind:'blue',title:'Cita próxima',desc:`${r.name}: ${diff===0?'hoy':diff===1?'mañana':`en ${diff} días`} a las ${r.time}.`});
+ const last=r.updated||r.created||todayISO(),stale=daysBetween(last,todayISO());
+ if(stale>=7&&!['Completado','Cancelado','No se presentó'].includes(r.status))a.push({kind:'red',title:'Solicitud sin movimiento',desc:`${r.name}: lleva ${stale} días sin actualización.`});
+ if(r.followup==='yes'&&!['Completado','Cancelado'].includes(r.status))a.push({kind:'',title:'Requiere seguimiento',desc:`${r.name}: ${r.notes||'Revisar el avance del trámite.'}`});
+ return a;
+}
+function allAlerts(){
+ let out=[];records.forEach(r=>alertsFor(r).forEach(a=>out.push({...a,r})));
+ const seen={};records.forEach(r=>{let k=r.date+' '+r.time;(seen[k]??=[]).push(r)});
+ Object.values(seen).filter(x=>x.length>1).forEach(x=>out.push({kind:'red',title:'Posible horario duplicado',desc:`${x.map(r=>r.name).join(', ')} tienen cita el ${fmt(x[0].date)} a las ${x[0].time}.`}));
+ return out;
+}
+function renderAll(){renderDashboard();renderAppointments();renderAlerts();renderHistory();renderStats();$('alertCount').textContent=allAlerts().length}
+function renderDashboard(){
+ $('sTotal').textContent=records.length;
+ $('sUpcoming').textContent=records.filter(r=>{let d=daysBetween(todayISO(),r.date);return d>=0&&d<=7&&!['Cancelado','Completado'].includes(r.status)}).length;
+ $('sPending').textContent=records.filter(r=>['Pendiente','En proceso'].includes(r.status)).length;
+ $('sDone').textContent=records.filter(r=>r.attendance==='Asistió'||r.status==='Completado').length;
+ let al=allAlerts().slice(0,3);$('dashboardAlerts').innerHTML=al.length?al.map(a=>`<div class="alert ${a.kind}"><strong>${esc(a.title)}</strong><p>${esc(a.desc)}</p></div>`).join(''):'<div class="alert blue"><strong>Todo al día</strong><p>No hay alertas por el momento.</p></div>';
+ let list=records.filter(r=>r.date>=todayISO()&&!['Cancelado','No se presentó'].includes(r.status)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,6);
+ $('upcomingTable').innerHTML=list.length?list.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${fmt(r.date)} · ${esc(r.time)}</td><td>${esc(r.type)}</td><td>${pill(r.status)}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">Todavía no hay citas próximas.</td></tr>';
+}
+function renderAppointments(){
+ let q=($('search')?.value||'').toLowerCase(),t=$('filterType')?.value||'',s=$('filterStatus')?.value||'',d=$('filterDate')?.value||'';
+ let list=[...records].filter(r=>r.name.toLowerCase().includes(q)&&(!t||r.type===t)&&(!s||r.status===s)&&(!d||r.date===d)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+ $('appointmentsTable').innerHTML=list.length?list.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${fmt(r.date)}<br><span class="muted">${esc(r.time)}</span></td><td>${esc(r.type)}</td><td>${pill(r.status)}</td><td>${pill(r.attendance||'Sin registrar')}</td><td><div class="actions"><button class="btn small" onclick="editRecord('${r.id}')">Editar</button><button class="btn small danger" onclick="deleteRecord('${r.id}')">Eliminar</button></div></td></tr>`).join(''):'<tr><td colspan="6" class="empty">No se encontraron citas.</td></tr>';
+}
+function renderAlerts(){
+ let list=allAlerts();$('allAlerts').innerHTML=list.length?list.map(a=>`<div class="alert-row"><span class="dot ${a.kind}"></span><div><strong>${esc(a.title)}</strong><div>${esc(a.desc)}</div>${a.r?`<small class="muted">${fmt(a.r.date)} · ${esc(a.r.type)}</small>`:''}</div></div>`).join(''):'<div class="empty">No hay alertas pendientes. ¡Buen trabajo!</div>';
+}
+function renderHistory(){
+ let q=($('historySearch')?.value||'').toLowerCase(),list=records.filter(r=>r.name.toLowerCase().includes(q)).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
+ $('historyTable').innerHTML=list.length?list.map(r=>`<tr><td><strong>${esc(r.name)}</strong></td><td>${fmt(r.date)}</td><td>${esc(r.type)}</td><td>${pill(r.status)}</td><td>${esc(r.notes||'—')}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">No hay registros en el historial.</td></tr>';
+}
+function renderStats(){
+ const count=t=>records.filter(r=>r.type===t).length;
+ $('stIns').textContent=count('Inscripción');$('stRen').textContent=count('Renovación');$('stMod').textContent=count('Modificación');$('stCancel').textContent=records.filter(r=>['Cancelado','No se presentó'].includes(r.status)).length;
+ const names=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],vals=names.map((_,i)=>records.filter(r=>dateObj(r.date).getDay()===i).length),max=Math.max(1,...vals);
+ $('weekdayBars').innerHTML=names.map((n,i)=>`<div class="bar-line"><span>${n}</span><div class="track"><div class="fill" style="width:${vals[i]/max*100}%"></div></div><b>${vals[i]}</b></div>`).join('');
+ const statuses=['Pendiente','En proceso','Completado','Cancelado','No se presentó'],sv=statuses.map(s=>records.filter(r=>r.status===s).length),sm=Math.max(1,...sv);
+ $('statusBars').innerHTML=statuses.map((n,i)=>`<div class="bar-line"><span>${n}</span><div class="track"><div class="fill" style="width:${sv[i]/sm*100}%"></div></div><b>${sv[i]}</b></div>`).join('');
+}
+function navigate(page){
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ const titles={dashboard:['Panel principal','Resumen de citas, solicitudes y pendientes.'],appointments:['Citas','Registra y administra las citas de contratistas.'],alerts:['Centro de alertas','Fechas próximas, solicitudes detenidas y seguimientos.'],history:['Historial','Consulta los registros anteriores de cada contratista.'],statistics:['Estadísticas','Conoce la demanda y el estado de los trámites.']};
+ $('pageTitle').textContent=titles[page][0];$('pageSub').textContent=titles[page][1];
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.page)));
+function openModal(r=null){
+ $('appointmentForm').reset();$('editId').value=r?.id||'';$('modalTitle').textContent=r?'Editar cita':'Registrar nueva cita';
+ $('name').value=r?.name||'';$('date').value=r?.date||todayISO();$('time').value=r?.time||'09:00';$('type').value=r?.type||'Inscripción';$('status').value=r?.status||'Pendiente';$('attendance').value=r?.attendance||'';$('followup').value=r?.followup||'no';$('notes').value=r?.notes||'';
+ $('modal').classList.add('open');
+}
+function closeModal(){$('modal').classList.remove('open')}
+function editRecord(id){let r=records.find(x=>x.id===id);if(r)openModal(r)}
+function deleteRecord(id){let r=records.find(x=>x.id===id);if(r&&confirm(`¿Eliminar la cita de ${r.name}?`)){records=records.filter(x=>x.id!==id);save();toast('Cita eliminada')}}
+$('appointmentForm').addEventListener('submit',e=>{
+ e.preventDefault();let id=$('editId').value,old=records.find(r=>r.id===id);
+ let r={id:id||String(Date.now()),name:$('name').value.trim(),date:$('date').value,time:$('time').value,type:$('type').value,status:$('status').value,attendance:$('attendance').value,followup:$('followup').value,notes:$('notes').value.trim(),created:old?.created||todayISO(),updated:todayISO()};
+ if(!r.name){toast('Escribe el nombre del contratista');return}
+ if(id)records=records.map(x=>x.id===id?r:x);else records.push(r);
+ save();closeModal();toast(id?'Cita actualizada':'Cita registrada correctamente');
+});
+$('today').textContent=new Date().toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+renderAll();
+function enterApp(){ document.getElementById('coverScreen').style.display='none'; }
+
+// Instalación PWA: el navegador muestra el diálogo cuando el dispositivo es compatible.
+let deferredInstallPrompt = null;
+const installBtn = document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  installBtn.style.display = 'inline-block';
+});
+async function installApp() {
+  if (!deferredInstallPrompt) {
+    toast('Usa el menú del navegador y elige “Agregar a pantalla de inicio”.');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installBtn.style.display = 'none';
+}
+window.addEventListener('appinstalled', () => {
+  installBtn.style.display = 'none';
+  toast('Aplicación instalada correctamente');
+});
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
